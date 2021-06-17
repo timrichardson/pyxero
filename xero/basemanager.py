@@ -256,6 +256,11 @@ class BaseManager(object):
             elif response.status_code == 404:
                 raise XeroNotFound(response)
 
+            elif response.status_code == 429:
+                problem = (" Reason: " + response.headers.get("X-Rate-Limit-Problem")) or ""
+                payload = (parse_qs(response.text) or "") + problem
+                raise XeroRateLimitExceeded(response, payload)
+
             elif response.status_code == 500:
                 raise XeroInternalError(response)
 
