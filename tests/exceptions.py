@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import unittest
 from datetime import date
-
 from mock import Mock, patch
 
 from xero import Xero
