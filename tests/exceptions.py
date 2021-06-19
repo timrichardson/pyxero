@@ -16,7 +16,6 @@ from xero.exceptions import (
     XeroRateLimitExceeded,
     XeroUnauthorized,
 )
-
 from . import mock_data
 
 
@@ -89,7 +88,7 @@ class ExceptionsTest(unittest.TestCase):
         xero = Xero(credentials)
 
         with self.assertRaises(
-            XeroExceptionUnknown, msg="Should raise a XeroExceptionUnknown"
+                XeroExceptionUnknown, msg="Should raise a XeroExceptionUnknown"
         ):
             xero.invoices.put(
                 {
@@ -262,9 +261,9 @@ class ExceptionsTest(unittest.TestCase):
         "If you exceed the rate limit, an exception is raised."
         # Response based off Xero documentation; not confirmed by reality.
         r_get.return_value = Mock(
-                status_code=429,
-                headers = {"X-Rate-Limit-Problem":"day"},
-                text="oauth_problem=rate%20limit%20exceeded&oauth_problem_advice=please%20wait%20before%20retrying%20the%20xero%20api",
+            status_code=429,
+            headers={"X-Rate-Limit-Problem": "day"},
+            text="oauth_problem=rate%20limit%20exceeded&oauth_problem_advice=please%20wait%20before%20retrying%20the%20xero%20api",
         )
 
         credentials = Mock(base_url="")
@@ -277,13 +276,13 @@ class ExceptionsTest(unittest.TestCase):
         except XeroRateLimitExceeded as e:
             # Error messages have been extracted
             self.assertEqual(str(e), "please wait before retrying the xero api")
-            self.assertIn("rate limit exceeded", e.errors[0] )
+            self.assertIn("rate limit exceeded", e.errors[0])
 
             # The response has also been stored
             self.assertEqual(e.response.status_code, 429)
             self.assertEqual(
-                    e.response.text,
-                    "oauth_problem=rate%20limit%20exceeded&oauth_problem_advice=please%20wait%20before%20retrying%20the%20xero%20api",
+                e.response.text,
+                "oauth_problem=rate%20limit%20exceeded&oauth_problem_advice=please%20wait%20before%20retrying%20the%20xero%20api",
             )
         except Exception as e:
             self.fail("Should raise a XeroRateLimitExceeded, not %s" % e)
